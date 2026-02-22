@@ -9,11 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sifonn&display=swap" rel="stylesheet">
 
 <style>
+/* Body and base */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   transition: all 0.5s ease;
   overflow: hidden;
+  background: #f0f0e5; /* placeholder light background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 /* Glitter canvas */
@@ -22,42 +28,40 @@ body {
   top: 0; left: 0;
   width: 100%; height: 100%;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 2;
 }
 
-/* Animated Dragon Background */
+/* Dragon background */
 #dragonBg {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 120%;
-  height: 120%;
-  max-width: none;
-  max-height: none;
-  transform: translate(-50%, -50%) rotate(0deg);
-  opacity: 0.08;
+  top: -20%;
+  left: -20%;
+  width: 160%;  /* larger than viewport */
+  height: 160%;
+  opacity: 0.05;
   z-index: 0;
   pointer-events: none;
-  animation: driftRotate 60s linear infinite;
+  animation: dragonDrift 80s linear infinite;
 }
 
-@keyframes driftRotate {
-  0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-  50% { transform: translate(-52%, -48%) rotate(15deg) scale(1.02); }
-  100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+@keyframes dragonDrift {
+  0% { transform: translate(0%, 0%) rotate(0deg); }
+  50% { transform: translate(2%, 3%) rotate(10deg); }
+  100% { transform: translate(0%, 0%) rotate(0deg); }
 }
 
-/* Container */
+/* Container box */
 .container {
   position: relative;
-  z-index: 1;
-  background: #fef6f5;
+  z-index: 3;
+  background: rgba(240, 240, 210, 0.85); /* light khaki transparency */
   padding: 50px 40px;
-  border-radius: 16px;
+  border-radius: 20px;
   max-width: 480px;
   width: 90%;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  backdrop-filter: blur(8px); /* slightly blur dragon behind */
   transition: all 0.5s ease;
 }
 
@@ -66,14 +70,14 @@ h1 {
   font-family: 'Sifonn', sans-serif;
   font-size: 32px;
   margin-bottom: 10px;
-  color: #ff8c94;
+  color: #8c9a70; /* pastel sage */
   transition: all 0.5s ease;
 }
 
 /* Subtitle */
 .subtitle {
   font-size: 14px;
-  color: #777;
+  color: #6e7d50; /* darker pastel for subtitle */
   margin-bottom: 35px;
   transition: all 0.5s ease;
 }
@@ -85,13 +89,14 @@ h1 {
   line-height: 1.5;
   margin-bottom: 40px;
   min-height: 60px;
+  color: #53634b; /* subtle pastel text */
   transition: all 0.5s ease;
 }
 
 /* Button */
 button {
   font-family: 'Bebas Neue', sans-serif;
-  background: #ffb7b2;
+  background: #b5c89f; /* pastel sage */
   color: white;
   border: none;
   padding: 14px 24px;
@@ -102,7 +107,7 @@ button {
 }
 
 button:hover {
-  background: #ff8c94;
+  background: #a1b88a;
   transform: translateY(-2px);
 }
 
@@ -110,20 +115,23 @@ button:hover {
 footer {
   margin-top: 35px;
   font-size: 12px;
-  color: #aaa;
+  color: #7d8b5e;
   transition: all 0.5s ease;
 }
 
 /* Dark mode styles */
 body.dark {
-  background: #2a2a3c;
+  background: #3c3d2e;
 }
 
-body.dark .container { background: #3b3b5c; }
-body.dark h1 { color: #ffd1dc; }
-body.dark .subtitle { color: #ccc; }
-body.dark .prompt { color: #ffe3f1; }
-body.dark footer { color: #bbb; }
+body.dark .container {
+  background: rgba(70, 80, 50, 0.85); /* moss green */
+}
+
+body.dark h1 { color: #a6b28f; } /* light olive */
+body.dark .subtitle { color: #9aa67e; }
+body.dark .prompt { color: #c3d2b2; }
+body.dark footer { color: #b0c2a0; }
 
 /* Toggle Button */
 #modeToggle {
@@ -133,7 +141,7 @@ body.dark footer { color: #bbb; }
   width: 40px;
   height: 40px;
   cursor: pointer;
-  z-index: 2;
+  z-index: 4;
   transition: all 0.5s ease;
 }
 </style>
@@ -149,8 +157,8 @@ body.dark footer { color: #bbb; }
 
 <!-- Toggle -->
 <svg id="modeToggle" viewBox="0 0 24 24">
-  <circle cx="12" cy="12" r="10" stroke="#ff8c94" stroke-width="2" fill="none"/>
-  <line x1="8" y1="12" x2="16" y2="12" stroke="#ff8c94" stroke-width="2"/>
+  <circle cx="12" cy="12" r="10" stroke="#8c9a70" stroke-width="2" fill="none"/>
+  <line x1="8" y1="12" x2="16" y2="12" stroke="#8c9a70" stroke-width="2"/>
 </svg>
 
 <div class="container">
@@ -206,17 +214,15 @@ let particles = [];
 function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
-
 function createParticle(x, y) {
   particles.push({ x, y, size: Math.random()*3+1, speedX: (Math.random()-0.5)*1.5, speedY: (Math.random()-0.5)*1.5, alpha:1 });
 }
 document.addEventListener('mousemove', e => { for(let i=0;i<3;i++) createParticle(e.clientX,e.clientY); });
-
 function animateParticles(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   for(let i=0;i<particles.length;i++){
     const p = particles[i];
-    ctx.fillStyle = `rgba(255,182,178,${p.alpha})`;
+    ctx.fillStyle = `rgba(181,200,159,${p.alpha})`; // pastel glitter (sage)
     ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
     p.x+=p.speedX; p.y+=p.speedY; p.alpha-=0.02;
     if(p.alpha<=0){particles.splice(i,1);i--;}
@@ -230,11 +236,11 @@ const toggle = document.getElementById('modeToggle');
 toggle.addEventListener('click', ()=>{
   document.body.classList.toggle('dark');
   if(document.body.classList.contains('dark')){
-    toggle.innerHTML = `<circle cx="12" cy="12" r="10" stroke="#ffd1dc" stroke-width="2" fill="none"/>
-    <line x1="8" y1="12" x2="16" y2="12" stroke="#ffd1dc" stroke-width="2"/>`; // closed eye
+    toggle.innerHTML = `<circle cx="12" cy="12" r="10" stroke="#a6b28f" stroke-width="2" fill="none"/>
+    <line x1="8" y1="12" x2="16" y2="12" stroke="#a6b28f" stroke-width="2"/>`;
   } else {
-    toggle.innerHTML = `<circle cx="12" cy="12" r="10" stroke="#ff8c94" stroke-width="2" fill="none"/>
-    <line x1="12" y1="8" x2="12" y2="16" stroke="#ff8c94" stroke-width="2"/>`; // open eye
+    toggle.innerHTML = `<circle cx="12" cy="12" r="10" stroke="#8c9a70" stroke-width="2" fill="none"/>
+    <line x1="12" y1="8" x2="12" y2="16" stroke="#8c9a70" stroke-width="2"/>`;
   }
 });
 </script>
