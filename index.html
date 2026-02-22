@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Draw This Today</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      text-align: center;
+      padding: 80px 20px;
+    }
+    h1 {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+    #prompt {
+      font-size: 26px;
+      color: #444;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎨 Draw This Today</h1>
+<p id="prompt"></p>
+
+<script>
+const prompts = [
+"Draw a city inside a tree",
+"Draw your favorite food as a character",
+"Draw an animal that can fly and swim",
+"Draw a peaceful place from your imagination",
+"Draw a robot learning to paint",
+"Draw a house made of clouds",
+"Draw yourself as a cartoon hero",
+"Draw a mysterious door in the forest",
+"Draw a tiny world inside a jar",
+"Draw a creature made of shapes"
+];
+
+const today = new Date();
+const index = today.getDate() % prompts.length;
+
+document.getElementById("prompt").innerText = prompts[index];
+</script>
+
+</body>
+</html>
