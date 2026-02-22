@@ -67,10 +67,24 @@ footer {
   font-size: 12px;
   color: #aaa;
 }
+
+/* Glitter canvas */
+#glitterCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Let clicks go through */
+  z-index: 9999; /* On top of everything */
+}
 </style>
 </head>
 
 <body>
+
+<!-- Glitter canvas -->
+<canvas id="glitterCanvas"></canvas>
 
 <div class="container">
   <h1>🎨 Draw This Today</h1>
@@ -84,6 +98,7 @@ footer {
 </div>
 
 <script>
+// Drawing prompts
 const prompts = [
 "Draw a city inside a tree",
 "Draw your favorite food as a character",
@@ -107,14 +122,12 @@ const prompts = [
 "Draw a character made of light"
 ];
 
-// Daily prompt (changes automatically each day)
+// Show daily prompt
 const today = new Date();
 let currentIndex = today.getDate() % prompts.length;
-
-// Show today's prompt first
 document.getElementById("prompt").innerText = prompts[currentIndex];
 
-// Generate random prompt when button clicked
+// Random prompt button
 function generatePrompt() {
   let newIndex;
   do {
@@ -124,6 +137,61 @@ function generatePrompt() {
   currentIndex = newIndex;
   document.getElementById("prompt").innerText = prompts[currentIndex];
 }
+
+// Glitter effect
+const canvas = document.getElementById('glitterCanvas');
+const ctx = canvas.getContext('2d');
+
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function createParticle(x, y) {
+  particles.push({
+    x: x,
+    y: y,
+    size: Math.random() * 3 + 1,
+    speedX: (Math.random() - 0.5) * 1.5,
+    speedY: (Math.random() - 0.5) * 1.5,
+    alpha: 1
+  });
+}
+
+document.addEventListener('mousemove', (e) => {
+  for(let i = 0; i < 3; i++) { // 3 particles per move
+    createParticle(e.clientX, e.clientY);
+  }
+});
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+
+    p.x += p.speedX;
+    p.y += p.speedY;
+    p.alpha -= 0.02;
+
+    if (p.alpha <= 0) {
+      particles.splice(i, 1);
+      i--;
+    }
+  }
+
+  requestAnimationFrame(animateParticles);
+}
+
+animateParticles();
 </script>
 
 </body>
