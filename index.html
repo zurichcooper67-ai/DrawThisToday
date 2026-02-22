@@ -1,29 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Draw This Today</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #ffffff;
-      text-align: center;
-      padding: 80px 20px;
-    }
-    h1 {
-      font-size: 40px;
-      margin-bottom: 20px;
-    }
-    #prompt {
-      font-size: 26px;
-      color: #444;
-      margin-top: 40px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Draw This Today</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6f6f6;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #222;
+}
+
+.container {
+  background: white;
+  padding: 50px 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 35px;
+}
+
+.prompt {
+  font-size: 22px;
+  line-height: 1.5;
+  margin-bottom: 40px;
+  min-height: 60px;
+}
+
+button {
+  background: #222;
+  color: white;
+  border: none;
+  padding: 14px 22px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+
+footer {
+  margin-top: 35px;
+  font-size: 12px;
+  color: #aaa;
+}
+</style>
 </head>
+
 <body>
 
-<h1>🎨 Draw This Today</h1>
-<p id="prompt"></p>
+<div class="container">
+  <h1>🎨 Draw This Today</h1>
+  <div class="subtitle">One prompt. No overthinking.</div>
+
+  <div id="prompt" class="prompt"></div>
+
+  <button onclick="generatePrompt()">Generate New Prompt</button>
+
+  <footer>Open → Draw → Repeat</footer>
+</div>
 
 <script>
 const prompts = [
@@ -36,13 +94,36 @@ const prompts = [
 "Draw yourself as a cartoon hero",
 "Draw a mysterious door in the forest",
 "Draw a tiny world inside a jar",
-"Draw a creature made of shapes"
+"Draw a creature made of geometric shapes",
+"Draw a character made of water",
+"Draw a floating island village",
+"Draw something that represents calm",
+"Draw a futuristic pet",
+"Draw a scene using only circles",
+"Draw a backpack filled with impossible items",
+"Draw a rainy day from memory",
+"Draw a hidden world underground",
+"Draw a vehicle powered by nature",
+"Draw a character made of light"
 ];
 
+// Daily prompt (changes automatically each day)
 const today = new Date();
-const index = today.getDate() % prompts.length;
+let currentIndex = today.getDate() % prompts.length;
 
-document.getElementById("prompt").innerText = prompts[index];
+// Show today's prompt first
+document.getElementById("prompt").innerText = prompts[currentIndex];
+
+// Generate random prompt when button clicked
+function generatePrompt() {
+  let newIndex;
+  do {
+    newIndex = Math.floor(Math.random() * prompts.length);
+  } while (newIndex === currentIndex);
+
+  currentIndex = newIndex;
+  document.getElementById("prompt").innerText = prompts[currentIndex];
+}
 </script>
 
 </body>
