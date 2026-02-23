@@ -8,194 +8,246 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f3f2e7;
-  overflow: hidden;
-  transition: background 0.6s ease;
+:root{
+  --bg:#f3f2e7;
+  --card:#ecebd5cc;
+  --accent:#7f8f6a;
 }
 
-/* DRAGON BACKGROUND */
-#dragon {
-  position: fixed;
-  width: 220%;
-  height: 220%;
-  top: -60%;
-  left: -50%;
-  opacity: 0.7;
-  z-index: 0;
-  pointer-events: none;
-  animation: floatDragon 55s ease-in-out infinite;
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:var(--bg);
+  overflow-x:hidden;
+  transition:background .6s ease;
 }
 
-@keyframes floatDragon {
-  0%   { transform: translate(0%, 0%) rotate(0deg) scale(1); }
-  25%  { transform: translate(-6%, 3%) rotate(2deg) scale(1.02); }
-  50%  { transform: translate(-12%, 6%) rotate(4deg) scale(1.03); }
-  75%  { transform: translate(-6%, 3%) rotate(2deg) scale(1.02); }
-  100% { transform: translate(0%, 0%) rotate(0deg) scale(1); }
+/* DRAGON */
+#dragon{
+  position:fixed;
+  width:220%;
+  height:220%;
+  top:-60%;
+  left:-50%;
+  opacity:.7;
+  z-index:0;
+  pointer-events:none;
+  animation:float 55s ease-in-out infinite;
+}
+@keyframes float{
+  50%{transform:translate(-10%,5%) rotate(4deg)}
 }
 
-/* GLITTER */
-#glitterCanvas {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
+/* HERO */
+.hero{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  z-index:2;
+  transition:transform .8s ease;
 }
 
-/* CENTER BOX */
-.container {
-  position: relative;
-  z-index: 3;
-  background: rgba(235,234,210,0.75);
-  backdrop-filter: blur(10px);
-  padding: 50px 40px;
-  border-radius: 18px;
-  text-align: center;
-  width: 90%;
-  max-width: 420px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  transition: background 0.6s ease;
+.container{
+  background:var(--card);
+  backdrop-filter:blur(10px);
+  padding:50px 40px;
+  border-radius:18px;
+  text-align:center;
+  max-width:420px;
+  box-shadow:0 10px 30px rgba(0,0,0,.05);
 }
 
-/* TITLE */
-h1 {
-  font-family: serif;
-  letter-spacing: 1px;
-  color: #7f8f6a;
-  margin-bottom: 10px;
+h1{color:var(--accent);margin:0}
+.prompt{
+  font-family:'Bebas Neue';
+  font-size:26px;
+  margin:40px 0;
+  color:#5f6f52;
 }
 
-/* PROMPT */
-.prompt {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 26px;
-  letter-spacing: 1px;
-  margin: 40px 0;
-  color: #5f6f52;
+button{
+  background:#c7d1a8;
+  border:none;
+  padding:12px 20px;
+  margin:6px;
+  border-radius:8px;
+  cursor:pointer;
 }
 
-/* BUTTON */
-button {
-  background: #c7d1a8;
-  border: none;
-  padding: 14px 24px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: 'Bebas Neue';
-  font-size: 16px;
-  transition: all .25s ease;
+/* GALLERY */
+.gallery{
+  min-height:100vh;
+  padding:80px 30px;
+  background:#f6f5ee;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:20px;
 }
 
-button:hover {
-  background: #b4c092;
-  transform: translateY(-2px);
+.art{
+  background:white;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+  cursor:pointer;
 }
 
-/* DARK MODE */
-body.dark {
-  background: #2f3326;
+.art img{
+  width:100%;
+  display:block;
 }
 
-body.dark .container {
-  background: rgba(70,80,50,0.75);
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
 }
-
-body.dark h1 { color: #b7c7a2; }
-body.dark .prompt { color: #d6e2c2; }
-
-/* EYE TOGGLE */
-#toggle {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  cursor: pointer;
-  font-size: 18px;
-  opacity: .6;
+.modal-content{
+  background:white;
+  padding:20px;
+  max-width:500px;
+  width:90%;
+  border-radius:10px;
+}
+.comments{
+  max-height:150px;
+  overflow:auto;
+  margin-top:10px;
+  font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ASIAN DRAGON -->
-<svg id="dragon" viewBox="0 0 1200 800" fill="none" stroke="#556b2f" stroke-width="7" stroke-linecap="round">
-  <path d="M100,500 C200,300 400,300 500,500 S800,700 900,500 S1100,300 1000,150 S700,50 600,200 S400,450 300,350 S150,250 100,500"/>
-  <path d="M980,150 C1040,120 1100,140 1150,110" stroke-width="4"/>
-  <path d="M980,170 C1040,200 1100,200 1160,230" stroke-width="4"/>
-  <path d="M960,130 L990,60" stroke-width="5"/>
+<!-- DRAGON -->
+<svg id="dragon" viewBox="0 0 1200 800" fill="none" stroke="#556b2f" stroke-width="7">
+<path d="M100,500 C200,300 400,300 500,500 S800,700 900,500 S1100,300 1000,150 S700,50 600,200 S400,450 300,350 S150,250 100,500"/>
 </svg>
 
-<canvas id="glitterCanvas"></canvas>
-
+<!-- HERO -->
+<section class="hero" id="hero">
 <div class="container">
-  <div id="toggle">◐</div>
-  <h1>Draw This Today</h1>
-  <div id="prompt" class="prompt"></div>
-  <button onclick="generatePrompt()">Generate New Prompt</button>
+<h1>Draw This Today</h1>
+<div id="prompt" class="prompt"></div>
+<button onclick="generatePrompt()">Generate</button>
+<button onclick="uploadArt()">Save My Drawing</button>
+<input type="file" id="fileInput" hidden accept="image/*">
+</div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery"></section>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+<div class="modal-content">
+<img id="modalImg" style="width:100%">
+<button onclick="likeArt()">❤️ Like (<span id="likeCount"></span>)</button>
+<div class="comments" id="comments"></div>
+<input id="commentInput" placeholder="Write comment..." style="width:100%">
+</div>
 </div>
 
 <script>
 /* PROMPTS */
-const prompts = [
-"Draw a city inside a tree",
+const prompts=[
 "Draw a floating temple",
 "Draw a spirit creature",
-"Draw a forgotten ruin",
-"Draw a mountain village in the clouds",
-"Draw a mythical landscape",
-"Draw a character made of wind",
-"Draw a world inside a jar",
-"Draw a calm sacred place",
-"Draw an ancient guardian"
+"Draw an ancient ruin",
+"Draw a sky village",
+"Draw a mythological guardian"
 ];
 
-const today = new Date();
-let currentIndex = today.getDate() % prompts.length;
-document.getElementById("prompt").innerText = prompts[currentIndex];
-
-function generatePrompt() {
-  let i;
-  do { i = Math.floor(Math.random()*prompts.length); }
-  while(i === currentIndex);
-  currentIndex = i;
-  document.getElementById("prompt").innerText = prompts[i];
+let current=0;
+function generatePrompt(){
+ current=Math.floor(Math.random()*prompts.length);
+ document.getElementById("prompt").innerText=prompts[current];
+ shiftPastel();
 }
 
-/* DARK MODE */
-document.getElementById("toggle").onclick = () =>
-  document.body.classList.toggle("dark");
+/* SOFT COLOR SHIFT */
+function shiftPastel(){
+ const hue=Math.floor(Math.random()*360);
+ document.documentElement.style.setProperty('--bg',`hsl(${hue},25%,92%)`);
+ document.documentElement.style.setProperty('--card',`hsla(${hue},30%,85%,.75)`);
+ document.documentElement.style.setProperty('--accent',`hsl(${hue},18%,45%)`);
+}
 
-/* GLITTER EFFECT */
-const canvas = document.getElementById("glitterCanvas");
-const ctx = canvas.getContext("2d");
-let particles = [];
+/* UPLOAD */
+function uploadArt(){ document.getElementById('fileInput').click(); }
 
-function resize(){ canvas.width=innerWidth; canvas.height=innerHeight }
-resize(); window.onresize = resize;
-
-document.onmousemove = e=>{
-  particles.push({x:e.x,y:e.y,a:1,s:Math.random()*2});
+fileInput.onchange=e=>{
+ const reader=new FileReader();
+ reader.onload=()=>{
+   const data=JSON.parse(localStorage.getItem("gallery")||"[]");
+   data.push({img:reader.result,likes:0,comments:[]});
+   localStorage.setItem("gallery",JSON.stringify(data));
+   loadGallery();
+ };
+ reader.readAsDataURL(e.target.files[0]);
 };
 
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p=>{
-    ctx.fillStyle=`rgba(180,200,160,${p.a})`;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.s,0,Math.PI*2);
-    ctx.fill();
-    p.a-=0.02;
-  });
-  particles=particles.filter(p=>p.a>0);
-  requestAnimationFrame(animate);
+/* LOAD GALLERY */
+function loadGallery(){
+ gallery.innerHTML="";
+ const data=JSON.parse(localStorage.getItem("gallery")||"[]");
+ data.forEach((item,i)=>{
+  const div=document.createElement("div");
+  div.className="art";
+  div.innerHTML=`<img src="${item.img}">`;
+  div.onclick=()=>openModal(i);
+  gallery.appendChild(div);
+ });
 }
-animate();
+loadGallery();
+
+/* MODAL */
+let activeIndex=null;
+function openModal(i){
+ activeIndex=i;
+ const data=JSON.parse(localStorage.getItem("gallery"));
+ modal.style.display="flex";
+ modalImg.src=data[i].img;
+ likeCount.innerText=data[i].likes;
+ renderComments();
+}
+
+function likeArt(){
+ const data=JSON.parse(localStorage.getItem("gallery"));
+ data[activeIndex].likes++;
+ localStorage.setItem("gallery",JSON.stringify(data));
+ likeCount.innerText=data[activeIndex].likes;
+}
+
+commentInput.addEventListener("keypress",e=>{
+ if(e.key==="Enter"){
+  const data=JSON.parse(localStorage.getItem("gallery"));
+  data[activeIndex].comments.push(commentInput.value);
+  commentInput.value="";
+  localStorage.setItem("gallery",JSON.stringify(data));
+  renderComments();
+ }
+});
+
+function renderComments(){
+ const data=JSON.parse(localStorage.getItem("gallery"));
+ comments.innerHTML=data[activeIndex].comments.map(c=>`<div>${c}</div>`).join("");
+}
+
+modal.onclick=e=>{ if(e.target===modal) modal.style.display="none"; };
+
+/* SCROLL ANIMATION */
+window.addEventListener("scroll",()=>{
+ hero.style.transform=`translateY(-${window.scrollY*.3}px)`;
+});
 </script>
 
 </body>
