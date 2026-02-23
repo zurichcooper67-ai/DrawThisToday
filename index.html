@@ -5,248 +5,197 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Draw This Today</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sifonn&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <style>
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
-  background: #f0f0e5; /* Light background fallback */
-  transition: all 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f2e7;
+  overflow: hidden;
+  transition: background 0.6s ease;
 }
 
-/* Dragon SVG background */
-#dragonBg {
+/* DRAGON BACKGROUND */
+#dragon {
   position: fixed;
-  top: -20%;
-  left: -20%;
-  width: 160%;
-  height: 160%;
-  opacity: 0.05;
+  width: 220%;
+  height: 220%;
+  top: -60%;
+  left: -50%;
+  opacity: 0.7;
   z-index: 0;
   pointer-events: none;
-  transform-origin: center;
-  animation: dragonDrift 80s linear infinite;
+  animation: floatDragon 55s ease-in-out infinite;
 }
 
-@keyframes dragonDrift {
-  0% { transform: translate(0%, 0%) rotate(0deg); }
-  50% { transform: translate(2%, 3%) rotate(10deg); }
-  100% { transform: translate(0%, 0%) rotate(0deg); }
+@keyframes floatDragon {
+  0%   { transform: translate(0%, 0%) rotate(0deg) scale(1); }
+  25%  { transform: translate(-6%, 3%) rotate(2deg) scale(1.02); }
+  50%  { transform: translate(-12%, 6%) rotate(4deg) scale(1.03); }
+  75%  { transform: translate(-6%, 3%) rotate(2deg) scale(1.02); }
+  100% { transform: translate(0%, 0%) rotate(0deg) scale(1); }
 }
 
-/* Glitter canvas */
+/* GLITTER */
 #glitterCanvas {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  inset: 0;
   pointer-events: none;
   z-index: 2;
 }
 
-/* Container box */
+/* CENTER BOX */
 .container {
   position: relative;
   z-index: 3;
-  background: rgba(240, 240, 210, 0.85); /* Light khaki + transparency */
+  background: rgba(235,234,210,0.75);
+  backdrop-filter: blur(10px);
   padding: 50px 40px;
-  border-radius: 20px;
-  max-width: 480px;
-  width: 90%;
+  border-radius: 18px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  backdrop-filter: blur(8px);
-  transition: all 0.5s ease;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  transition: background 0.6s ease;
 }
 
-/* Title */
+/* TITLE */
 h1 {
-  font-family: 'Sifonn', sans-serif;
-  font-size: 32px;
+  font-family: serif;
+  letter-spacing: 1px;
+  color: #7f8f6a;
   margin-bottom: 10px;
-  color: #8c9a70; /* pastel sage */
-  transition: all 0.5s ease;
 }
 
-/* Subtitle */
-.subtitle {
-  font-size: 14px;
-  color: #6e7d50;
-  margin-bottom: 35px;
-  transition: all 0.5s ease;
-}
-
-/* Prompt */
+/* PROMPT */
 .prompt {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  line-height: 1.5;
-  margin-bottom: 40px;
-  min-height: 60px;
-  color: #53634b;
-  transition: all 0.5s ease;
+  font-size: 26px;
+  letter-spacing: 1px;
+  margin: 40px 0;
+  color: #5f6f52;
 }
 
-/* Button */
+/* BUTTON */
 button {
-  font-family: 'Bebas Neue', sans-serif;
-  background: #b5c89f;
-  color: white;
+  background: #c7d1a8;
   border: none;
   padding: 14px 24px;
-  font-size: 16px;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-family: 'Bebas Neue';
+  font-size: 16px;
+  transition: all .25s ease;
 }
 
 button:hover {
-  background: #a1b88a;
+  background: #b4c092;
   transform: translateY(-2px);
 }
 
-/* Footer */
-footer {
-  margin-top: 35px;
-  font-size: 12px;
-  color: #7d8b5e;
-  transition: all 0.5s ease;
-}
-
-/* Dark mode */
+/* DARK MODE */
 body.dark {
-  background: #3c3d2e;
+  background: #2f3326;
 }
 
 body.dark .container {
-  background: rgba(70, 80, 50, 0.85); /* moss green + transparency */
+  background: rgba(70,80,50,0.75);
 }
 
-body.dark h1 { color: #a6b28f; }
-body.dark .subtitle { color: #9aa67e; }
-body.dark .prompt { color: #c3d2b2; }
-body.dark footer { color: #b0c2a0; }
+body.dark h1 { color: #b7c7a2; }
+body.dark .prompt { color: #d6e2c2; }
 
-/* Toggle Button */
-#modeToggle {
+/* EYE TOGGLE */
+#toggle {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 40px;
-  height: 40px;
+  top: 18px;
+  right: 18px;
   cursor: pointer;
-  z-index: 4;
-  transition: all 0.5s ease;
+  font-size: 18px;
+  opacity: .6;
 }
 </style>
 </head>
 
 <body>
 
-<!-- Inline SVG Dragon -->
-<svg id="dragonBg" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
-<path d="M200,300 C250,200 550,200 600,300 S750,500 700,400" stroke="#000000" stroke-width="8" fill="none"/>
-<path d="M220,320 C270,220 530,220 580,320 S730,480 680,380" stroke="#000000" stroke-width="4" fill="none"/>
-<!-- more simple curvy lines for a dragon-like slithering body -->
+<!-- ASIAN DRAGON -->
+<svg id="dragon" viewBox="0 0 1200 800" fill="none" stroke="#556b2f" stroke-width="7" stroke-linecap="round">
+  <path d="M100,500 C200,300 400,300 500,500 S800,700 900,500 S1100,300 1000,150 S700,50 600,200 S400,450 300,350 S150,250 100,500"/>
+  <path d="M980,150 C1040,120 1100,140 1150,110" stroke-width="4"/>
+  <path d="M980,170 C1040,200 1100,200 1160,230" stroke-width="4"/>
+  <path d="M960,130 L990,60" stroke-width="5"/>
 </svg>
 
-<!-- Glitter canvas -->
 <canvas id="glitterCanvas"></canvas>
 
-<!-- Toggle -->
-<svg id="modeToggle" viewBox="0 0 24 24">
-  <circle cx="12" cy="12" r="10" stroke="#8c9a70" stroke-width="2" fill="none"/>
-  <line x1="8" y1="12" x2="16" y2="12" stroke="#8c9a70" stroke-width="2"/>
-</svg>
-
 <div class="container">
+  <div id="toggle">◐</div>
   <h1>Draw This Today</h1>
-  <div class="subtitle">One prompt. No overthinking.</div>
   <div id="prompt" class="prompt"></div>
   <button onclick="generatePrompt()">Generate New Prompt</button>
-  <footer>Open → Draw → Repeat</footer>
 </div>
 
 <script>
-// Prompts
+/* PROMPTS */
 const prompts = [
 "Draw a city inside a tree",
-"Draw your favorite food as a character",
-"Draw an animal that can fly and swim",
-"Draw a peaceful place from your imagination",
-"Draw a robot learning to paint",
-"Draw a house made of clouds",
-"Draw yourself as a cartoon hero",
-"Draw a mysterious door in the forest",
-"Draw a tiny world inside a jar",
-"Draw a creature made of geometric shapes",
-"Draw a character made of water",
-"Draw a floating island village",
-"Draw something that represents calm",
-"Draw a futuristic pet",
-"Draw a scene using only circles",
-"Draw a backpack filled with impossible items",
-"Draw a rainy day from memory",
-"Draw a hidden world underground",
-"Draw a vehicle powered by nature",
-"Draw a character made of light"
+"Draw a floating temple",
+"Draw a spirit creature",
+"Draw a forgotten ruin",
+"Draw a mountain village in the clouds",
+"Draw a mythical landscape",
+"Draw a character made of wind",
+"Draw a world inside a jar",
+"Draw a calm sacred place",
+"Draw an ancient guardian"
 ];
 
-// Daily prompt
 const today = new Date();
 let currentIndex = today.getDate() % prompts.length;
 document.getElementById("prompt").innerText = prompts[currentIndex];
 
-// Random prompt
 function generatePrompt() {
-  let newIndex;
-  do { newIndex = Math.floor(Math.random() * prompts.length); } while (newIndex === currentIndex);
-  currentIndex = newIndex;
-  document.getElementById("prompt").innerText = prompts[currentIndex];
+  let i;
+  do { i = Math.floor(Math.random()*prompts.length); }
+  while(i === currentIndex);
+  currentIndex = i;
+  document.getElementById("prompt").innerText = prompts[i];
 }
 
-// Glitter
-const canvas = document.getElementById('glitterCanvas');
-const ctx = canvas.getContext('2d');
+/* DARK MODE */
+document.getElementById("toggle").onclick = () =>
+  document.body.classList.toggle("dark");
+
+/* GLITTER EFFECT */
+const canvas = document.getElementById("glitterCanvas");
+const ctx = canvas.getContext("2d");
 let particles = [];
-function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-function createParticle(x, y) {
-  particles.push({ x, y, size: Math.random()*3+1, speedX: (Math.random()-0.5)*1.5, speedY: (Math.random()-0.5)*1.5, alpha:1 });
-}
-document.addEventListener('mousemove', e => { for(let i=0;i<3;i++) createParticle(e.clientX,e.clientY); });
-function animateParticles(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  for(let i=0;i<particles.length;i++){
-    const p = particles[i];
-    ctx.fillStyle = `rgba(181,200,159,${p.alpha})`; // pastel glitter
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
-    p.x+=p.speedX; p.y+=p.speedY; p.alpha-=0.02;
-    if(p.alpha<=0){particles.splice(i,1);i--;}
-  }
-  requestAnimationFrame(animateParticles);
-}
-animateParticles();
 
-// Dark/light toggle
-const toggle = document.getElementById('modeToggle');
-toggle.addEventListener('click', ()=>{
-  document.body.classList.toggle('dark');
-  if(document.body.classList.contains('dark')){
-    toggle.innerHTML = `<circle cx="12" cy="12" r="10" stroke="#a6b28f" stroke-width="2" fill="none"/>
-    <line x1="8" y1="12" x2="16" y2="12" stroke="#a6b28f" stroke-width="2"/>`;
-  } else {
-    toggle.innerHTML = `<circle cx="12" cy="12" r="10" stroke="#8c9a70" stroke-width="2" fill="none"/>
-    <line x1="12" y1="8" x2="12" y2="16" stroke="#8c9a70" stroke-width="2"/>`;
-  }
-});
+function resize(){ canvas.width=innerWidth; canvas.height=innerHeight }
+resize(); window.onresize = resize;
+
+document.onmousemove = e=>{
+  particles.push({x:e.x,y:e.y,a:1,s:Math.random()*2});
+};
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    ctx.fillStyle=`rgba(180,200,160,${p.a})`;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.s,0,Math.PI*2);
+    ctx.fill();
+    p.a-=0.02;
+  });
+  particles=particles.filter(p=>p.a>0);
+  requestAnimationFrame(animate);
+}
+animate();
 </script>
 
 </body>
