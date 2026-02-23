@@ -16,10 +16,18 @@
 
 body{
   margin:0;
-  font-family:sans-serif;
   background:var(--bg);
+  font-family:sans-serif;
   overflow-x:hidden;
   transition:background .6s ease;
+}
+
+/* GLITTER CANVAS */
+#glitter{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:5;
 }
 
 /* DRAGON */
@@ -31,7 +39,6 @@ body{
   left:-50%;
   opacity:.7;
   z-index:0;
-  pointer-events:none;
   animation:float 55s ease-in-out infinite;
 }
 @keyframes float{
@@ -46,7 +53,6 @@ body{
   justify-content:center;
   position:relative;
   z-index:2;
-  transition:transform .8s ease;
 }
 
 .container{
@@ -60,6 +66,7 @@ body{
 }
 
 h1{color:var(--accent);margin:0}
+
 .prompt{
   font-family:'Bebas Neue';
   font-size:26px;
@@ -74,7 +81,9 @@ button{
   margin:6px;
   border-radius:8px;
   cursor:pointer;
+  transition:.2s;
 }
+button:hover{transform:translateY(-2px)}
 
 /* GALLERY */
 .gallery{
@@ -94,28 +103,40 @@ button{
   cursor:pointer;
 }
 
-.art img{
-  width:100%;
-  display:block;
-}
+.art img{width:100%}
 
 /* MODAL */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.6);
+  background:rgba(0,0,0,.5);
   display:none;
   align-items:center;
   justify-content:center;
   z-index:10;
 }
+
 .modal-content{
   background:white;
   padding:20px;
+  border-radius:10px;
   max-width:500px;
   width:90%;
-  border-radius:10px;
 }
+
+/* HEART BUTTON */
+.heart{
+  font-size:22px;
+  cursor:pointer;
+  transition:.25s ease;
+  opacity:.5;
+}
+.heart.liked{
+  color:#e07a7a;
+  opacity:1;
+  transform:scale(1.2);
+}
+
 .comments{
   max-height:150px;
   overflow:auto;
@@ -127,13 +148,13 @@ button{
 
 <body>
 
-<!-- DRAGON -->
+<canvas id="glitter"></canvas>
+
 <svg id="dragon" viewBox="0 0 1200 800" fill="none" stroke="#556b2f" stroke-width="7">
 <path d="M100,500 C200,300 400,300 500,500 S800,700 900,500 S1100,300 1000,150 S700,50 600,200 S400,450 300,350 S150,250 100,500"/>
 </svg>
 
-<!-- HERO -->
-<section class="hero" id="hero">
+<section class="hero">
 <div class="container">
 <h1>Draw This Today</h1>
 <div id="prompt" class="prompt"></div>
@@ -143,14 +164,12 @@ button{
 </div>
 </section>
 
-<!-- GALLERY -->
 <section class="gallery" id="gallery"></section>
 
-<!-- MODAL -->
 <div class="modal" id="modal">
 <div class="modal-content">
 <img id="modalImg" style="width:100%">
-<button onclick="likeArt()">❤️ Like (<span id="likeCount"></span>)</button>
+<div class="heart" id="heart" onclick="toggleLike()">♡</div>
 <div class="comments" id="comments"></div>
 <input id="commentInput" placeholder="Write comment..." style="width:100%">
 </div>
@@ -166,33 +185,32 @@ const prompts=[
 "Draw a mythological guardian"
 ];
 
-let current=0;
 function generatePrompt(){
- current=Math.floor(Math.random()*prompts.length);
- document.getElementById("prompt").innerText=prompts[current];
+ document.getElementById("prompt").innerText =
+ prompts[Math.floor(Math.random()*prompts.length)];
  shiftPastel();
 }
 
-/* SOFT COLOR SHIFT */
+/* PASTEL SHIFT */
 function shiftPastel(){
- const hue=Math.floor(Math.random()*360);
- document.documentElement.style.setProperty('--bg',`hsl(${hue},25%,92%)`);
- document.documentElement.style.setProperty('--card',`hsla(${hue},30%,85%,.75)`);
- document.documentElement.style.setProperty('--accent',`hsl(${hue},18%,45%)`);
+ const h=Math.floor(Math.random()*360);
+ document.documentElement.style.setProperty('--bg',`hsl(${h},25%,92%)`);
+ document.documentElement.style.setProperty('--card',`hsla(${h},30%,85%,.75)`);
+ document.documentElement.style.setProperty('--accent',`hsl(${h},18%,45%)`);
 }
 
 /* UPLOAD */
-function uploadArt(){ document.getElementById('fileInput').click(); }
+function uploadArt(){ fileInput.click(); }
 
 fileInput.onchange=e=>{
- const reader=new FileReader();
- reader.onload=()=>{
+ const r=new FileReader();
+ r.onload=()=>{
    const data=JSON.parse(localStorage.getItem("gallery")||"[]");
-   data.push({img:reader.result,likes:0,comments:[]});
+   data.push({img:r.result,liked:false,comments:[]});
    localStorage.setItem("gallery",JSON.stringify(data));
    loadGallery();
  };
- reader.readAsDataURL(e.target.files[0]);
+ r.readAsDataURL(e.target.files[0]);
 };
 
 /* LOAD GALLERY */
@@ -210,27 +228,30 @@ function loadGallery(){
 loadGallery();
 
 /* MODAL */
-let activeIndex=null;
+let active=null;
 function openModal(i){
- activeIndex=i;
+ active=i;
  const data=JSON.parse(localStorage.getItem("gallery"));
  modal.style.display="flex";
  modalImg.src=data[i].img;
- likeCount.innerText=data[i].likes;
+
+ heart.classList.toggle("liked",data[i].liked);
+ heart.textContent=data[i].liked?"♥":"♡";
+
  renderComments();
 }
 
-function likeArt(){
+function toggleLike(){
  const data=JSON.parse(localStorage.getItem("gallery"));
- data[activeIndex].likes++;
+ data[active].liked=!data[active].liked;
  localStorage.setItem("gallery",JSON.stringify(data));
- likeCount.innerText=data[activeIndex].likes;
+ openModal(active);
 }
 
 commentInput.addEventListener("keypress",e=>{
  if(e.key==="Enter"){
   const data=JSON.parse(localStorage.getItem("gallery"));
-  data[activeIndex].comments.push(commentInput.value);
+  data[active].comments.push(commentInput.value);
   commentInput.value="";
   localStorage.setItem("gallery",JSON.stringify(data));
   renderComments();
@@ -239,15 +260,36 @@ commentInput.addEventListener("keypress",e=>{
 
 function renderComments(){
  const data=JSON.parse(localStorage.getItem("gallery"));
- comments.innerHTML=data[activeIndex].comments.map(c=>`<div>${c}</div>`).join("");
+ comments.innerHTML=data[active].comments.map(c=>`<div>${c}</div>`).join("");
 }
 
 modal.onclick=e=>{ if(e.target===modal) modal.style.display="none"; };
 
-/* SCROLL ANIMATION */
-window.addEventListener("scroll",()=>{
- hero.style.transform=`translateY(-${window.scrollY*.3}px)`;
-});
+/* GLITTER EFFECT */
+const canvas=document.getElementById("glitter");
+const ctx=canvas.getContext("2d");
+let particles=[];
+
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
+resize(); window.onresize=resize;
+
+document.onmousemove=e=>{
+ particles.push({x:e.x,y:e.y,a:1,s:Math.random()*2});
+};
+
+function animate(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ particles.forEach(p=>{
+   ctx.fillStyle=`rgba(180,200,160,${p.a})`;
+   ctx.beginPath();
+   ctx.arc(p.x,p.y,p.s,0,Math.PI*2);
+   ctx.fill();
+   p.a-=0.02;
+ });
+ particles=particles.filter(p=>p.a>0);
+ requestAnimationFrame(animate);
+}
+animate();
 </script>
 
 </body>
